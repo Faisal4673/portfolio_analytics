@@ -1,0 +1,3 @@
+MONTHS = 60
+INTERVAL = "1d"
+MARKET = "^RUA"
