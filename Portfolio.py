@@ -5,13 +5,14 @@ import numpy as np
 class Portfolio:
     def __init__(self, stock_dict):
         self.stock_dict = {Stock(stock): weight for stock, weight in stock_dict.items()}
-        self.ticker_dict ={stock.ticker: weight for stock, weight, in self.stock_dict.items()}
+        self.ticker_dict ={stock.ticker: weight for stock, weight in self.stock_dict.items()}
         self.corr_matrix = pd.concat([stock.returns for stock in self.stock_dict], axis=1, join="outer").corr()
         self.betas = pd.Series({stock.ticker: stock.beta() for stock in self.stock_dict})
-        self.avg_beta = sum([stock.beta()* weight for stock, weight, in self.stock_dict.items()])
+        self.avg_beta = sum([stock.beta()* weight for stock, weight in self.stock_dict.items()])
         self.avg_corr = self._compute_avg_corr()
         self.returns = pd.DataFrame((pd.concat([stock.returns * weight for stock, weight in self.stock_dict.items()], axis=1, join="inner")).sum(axis=1), columns=["PORTFOLIO RETURNS"])
         self.volatility = (self.returns.std() * np.sqrt(252))["PORTFOLIO RETURNS"]
+        self.capm_return = sum([stock.capm_return * weight for stock, weight in self.stock_dict.items()])
 
 
     
@@ -23,6 +24,7 @@ class Portfolio:
         w_vals = weight_array[mask]
         valid = ~np.isnan(corr_vals)
         return (corr_vals[valid] * w_vals[valid]).sum() / w_vals[valid].sum()
+
         
 
     
@@ -67,6 +69,6 @@ test_dict = {
     "GOOG": 0.5,
     "AMZN": 0.5,}
 
-matrix_etf = Portfolio(test_dict)
+#matrix_etf = Portfolio(matrix_dict)
 
-print(matrix_etf.betas)
+#print(matrix_etf.betas)
