@@ -6,11 +6,12 @@ from datetime import date, timedelta as dt
 
 
 def get_beta_alpha(stock_returns, market_returns):
-    #Gets the returns of the data (day to day pct change). Uses russel3000 as default market. Merges according to date. Adds suffix
+    # Regress the stock's returns on the market's returns (aligned by date).
+    # The slope is beta (market sensitivity); the intercept is alpha.
     merge_data = pd.merge(stock_returns, market_returns, left_index=True, right_index=True)
     y = merge_data.iloc[:, 0]
     x = merge_data.iloc[:, 1]
-    # Not sure what this is, something about setting up the shape of the regression
+    # Build the design matrix [x, 1] and solve the least-squares fit y = beta*x + alpha.
     X = np.vstack([x, np.ones(len(x))]).T
     beta, alpha = np.linalg.lstsq(X, y, rcond=None)[0]
     return beta, alpha

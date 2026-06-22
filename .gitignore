@@ -9,5 +9,6 @@ wheels/
 # Virtual environments
 .venv
 
-# Other
-tests.py
+# macOS / editor
+.DS_Store
+.vscode/
